@@ -12,6 +12,8 @@ import "react-toastify/dist/ReactToastify.css";
 import EditTeachers from "./pages/teachers/EditTeacher";
 import StudentProfile from "./pages/students/StudentProfile";
 import EditStudents from "./pages/students/EditStudent";
+import Grades from "./pages/parameters/Grades";
+import Classes from "./pages/parameters/Classes";
 
 const App = () => {
   return (
@@ -23,12 +25,20 @@ const App = () => {
         <Route path="/teacher" element={<ViewTeachers />} />
         <Route path="/addteacher" element={<AddTeachers />} />
         <Route path="/editteacher/:id" element={<EditTeachers />} />
+
+        {/* student routes */}
         <Route path="/student" element={<ViewStudents />} />
         <Route path="/addstudent" element={<AddStudents />} />
         <Route path="/editstudent/:id" element={<EditStudents />} />
         <Route path="/profile/:id" element={<StudentProfile />} />
+
+        {/* stuff rooutes */}
         <Route path="/stuff" element={<ViewStuff />} />
         <Route path="/addstuff" element={<AddStuff />} />
+
+        {/* stuff routes */}
+        <Route path="/classes" element={<Classes />} />
+        <Route path="/grades" element={<Grades />} />
       </Routes>
       <ToastContainer
         position="top-center"

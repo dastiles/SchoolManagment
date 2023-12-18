@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Button,
   Checkbox,
@@ -18,9 +19,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
 import CenterModal from "../../components/CenterModal";
-import { getStudents, getTeachers } from "../../store/store";
 
-const ViewTeachers = () => {
+const Grades = () => {
   const [teacher, setTeacher] = useState([]);
   const [teacherDetails, setTeacherDetails] = useState([]);
 
@@ -64,14 +64,30 @@ const ViewTeachers = () => {
   const schoolIdRef = useRef(null);
 
   useEffect(() => {
-    getTeachers().then((res) => setTeacher(res.data.content));
+    const getTeachers = async () => {
+      try {
+        await api
+          .get(`/api/v1/teachers?schoolId=${schoolIdRef.current}`)
+          .then((response) => {
+            setTeacher(response.data.content);
+            console.log(response.data.content);
+            console.log(teacher);
+          })
+          .catch((err) => {
+            console.log(err.response.data.message, "the error");
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    };
     if (!authState.accessToken) {
       navigate("/login");
       navigate(0);
     } else {
       schoolIdRef.current = decodeTokens().accessTokenData.schoolId;
+      getTeachers();
     }
-  }, [navigate]);
+  }, [setTeacher]);
 
   const handleDelete = (teacher) => {
     let { teacherId, firstName, lastName } = teacher;
@@ -221,4 +237,4 @@ const ViewTeachers = () => {
   );
 };
 
-export default ViewTeachers;
+export default Grades;

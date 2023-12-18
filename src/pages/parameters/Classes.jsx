@@ -17,10 +17,11 @@ import api, { authState, decodeTokens } from "../../auth/auth";
 import { Link, useNavigate } from "react-router-dom";
 import { MdDelete, MdEdit } from "react-icons/md";
 import { FaEye } from "react-icons/fa";
+import { IoMdAdd } from "react-icons/io";
 import CenterModal from "../../components/CenterModal";
-import { getStudents, getTeachers } from "../../store/store";
+import ClassFormModal from "../../components/ClassFormModal";
 
-const ViewTeachers = () => {
+const Classes = () => {
   const [teacher, setTeacher] = useState([]);
   const [teacherDetails, setTeacherDetails] = useState([]);
 
@@ -64,14 +65,30 @@ const ViewTeachers = () => {
   const schoolIdRef = useRef(null);
 
   useEffect(() => {
-    getTeachers().then((res) => setTeacher(res.data.content));
+    const getTeachers = async () => {
+      try {
+        await api
+          .get(`/api/v1/teachers?schoolId=${schoolIdRef.current}`)
+          .then((response) => {
+            setTeacher(response.data.content);
+            console.log(response.data.content);
+            console.log(teacher);
+          })
+          .catch((err) => {
+            console.log(err.response.data.message, "the error");
+          });
+      } catch (error) {
+        console.log(error);
+      }
+    };
     if (!authState.accessToken) {
       navigate("/login");
       navigate(0);
     } else {
       schoolIdRef.current = decodeTokens().accessTokenData.schoolId;
+      getTeachers();
     }
-  }, [navigate]);
+  }, [setTeacher]);
 
   const handleDelete = (teacher) => {
     let { teacherId, firstName, lastName } = teacher;
@@ -113,12 +130,26 @@ const ViewTeachers = () => {
         <Topnavbar />
 
         <div className="content-body my-4 px-4">
+          <ClassFormModal />
           <CenterModal member={teacherDetails} />
           <div className="col-12">
             <div className="card">
-              <div className="card-header">
-                <h4 className="card-title">Teachers</h4>
+              <div className="card-header d-flex justify-content-between">
+                <div className="col-xl-6 col-lg-12 col-sm-12">
+                  <h4 className="card-title">Classes</h4>
+                </div>
+                <div className="col-xl-6 col-lg-12 col-sm-12 d-flex justify-content-end align-items-center ">
+                  <span className="px-2">Add Classes</span>
+                  <IconButton
+                    aria-label="delete"
+                    data-bs-toggle="modal"
+                    data-bs-target=".bd-example-modal-lg"
+                  >
+                    <IoMdAdd className="text-bg-primary" />
+                  </IconButton>
+                </div>
               </div>
+
               <div className="card-body">
                 <TableContainer className="w-100">
                   <Table>
@@ -221,4 +252,4 @@ const ViewTeachers = () => {
   );
 };
 
-export default ViewTeachers;
+export default Classes;

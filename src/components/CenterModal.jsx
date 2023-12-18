@@ -1,10 +1,30 @@
-import { useEffect } from "react";
-import { studentState } from "../store/store";
+import { useNavigate } from "react-router-dom";
+import api from "../auth/auth";
+import PropTypes from "prop-types";
+import { toast } from "react-toastify";
 
 const CenterModal = (props) => {
-  // const { studentName } = studentState();
-  // eslint-disable-next-line react/prop-types
-  console.log(props.student);
+  console.log(props.member.name);
+  const navigate = useNavigate();
+  const handleDelete = async () => {
+    try {
+      await api
+        .delete(props.member.url)
+        .then((response) => {
+          console.log(response.data);
+          toast.success("Succesfully Deleted");
+          navigate("/teacher");
+          navigate(0);
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+          console.log(err.response.data.message, "the error");
+        });
+      // navigate(0);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div className="modal fade" id="exampleModalCenter">
@@ -17,7 +37,7 @@ const CenterModal = (props) => {
             </button>
           </div>
           <div className="modal-body">
-            <p>Are sure you want to delete {props.student.lastName}?</p>
+            <p>Are sure you want to delete {props.member.name}?</p>
           </div>
           <div className="modal-footer">
             <button
@@ -30,7 +50,8 @@ const CenterModal = (props) => {
             <button
               type="button"
               className="btn btn-danger"
-              onClick={() => console.log(props.student.lastName)}
+              data-bs-dismiss="modal"
+              onClick={() => handleDelete()}
             >
               Delete
             </button>
@@ -39,6 +60,13 @@ const CenterModal = (props) => {
       </div>
     </div>
   );
+};
+
+CenterModal.propTypes = {
+  member: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 };
 
 export default CenterModal;

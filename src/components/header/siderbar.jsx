@@ -1,6 +1,7 @@
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { PiStudent } from "react-icons/pi";
 import { GiAstronautHelmet } from "react-icons/gi";
+import { TiFlowParallel } from "react-icons/ti";
 import { Link } from "react-router-dom";
 
 const Siderbar = () => {
@@ -17,6 +18,24 @@ const Siderbar = () => {
               <li>
                 <Link to={"/"} reloadDocument>
                   Dashboard
+                </Link>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a className="has-arrow ai-icon" aria-expanded="false">
+              <TiFlowParallel size={30} className="me-3" />
+              <span className="nav-text">Parameters</span>
+            </a>
+            <ul aria-expanded="false">
+              <li>
+                <Link to={"/classes"} reloadDocument>
+                  Classes
+                </Link>
+              </li>
+              <li>
+                <Link to={"/grades"} reloadDocument>
+                  Grades
                 </Link>
               </li>
             </ul>

@@ -1,8 +1,20 @@
 import { useForm } from "react-hook-form";
 import Topnavbar from "../../components/header/Topnavbar";
 import Siderbar from "../../components/header/siderbar";
+import { useEffect, useState } from "react";
+import {
+  createStudents,
+  getClasses,
+  getGrades,
+  getTeachers,
+  memberState,
+} from "../../store/store";
 
 const AddStudents = () => {
+  const [teacher, setTeacher] = useState([]);
+  const [classes, setClasses] = useState([]);
+  const [grade, setGrade] = useState([]);
+
   const {
     register,
     handleSubmit,
@@ -10,8 +22,39 @@ const AddStudents = () => {
   } = useForm();
 
   const onSubmit = (data) => {
-    console.log(data);
+    const {
+      firstName,
+      lastName,
+      classId,
+      teacherId,
+      gradeId,
+      age,
+      gender,
+      address,
+    } = data;
+
+    const body = {
+      firstName,
+      lastName,
+      age,
+      gender,
+      address,
+      studentClass: {
+        classId,
+      },
+      grade: {
+        gradeId,
+      },
+    };
+
+    createStudents(body).then((res) => console.log(res));
   };
+
+  useEffect(() => {
+    getTeachers().then((res) => setTeacher(res.data.content));
+    getClasses().then((res) => setClasses(res.data.content));
+    getGrades().then((res) => setGrade(res.data));
+  }, []);
   return (
     <div>
       <div id="preloader">
@@ -121,7 +164,7 @@ const AddStudents = () => {
                     <div className="form-group row">
                       <label
                         className="col-sm-3 col-form-label"
-                        htmlFor="firstname"
+                        htmlFor="firstName"
                       >
                         Firstname
                         <span className="text-danger">*</span>
@@ -131,28 +174,28 @@ const AddStudents = () => {
                           type="text"
                           className="form-control"
                           placeholder="Firstname"
-                          id="firstname"
-                          name="firstname"
-                          {...register("firstname", {
+                          id="firstName"
+                          name="firstName"
+                          {...register("firstName", {
                             required: true,
                             minLength: 3,
                             maxLength: 20,
                           })}
                         />
-                        {errors.firstname &&
-                          errors.firstname.type === "required" && (
+                        {errors.firstName &&
+                          errors.firstName.type === "required" && (
                             <span className="text-danger">
                               Firstname is required
                             </span>
                           )}
-                        {errors.firstname &&
-                          errors.firstname.type === "minLength" && (
+                        {errors.firstName &&
+                          errors.firstName.type === "minLength" && (
                             <span className="text-danger">
                               Firstname should be at least 2 characters
                             </span>
                           )}
-                        {errors.firstname &&
-                          errors.firstname.type === "maxLength" && (
+                        {errors.firstName &&
+                          errors.firstName.type === "maxLength" && (
                             <span className="text-danger">
                               Firstname should not exceed 20 characters
                             </span>
@@ -162,7 +205,7 @@ const AddStudents = () => {
                     <div className="form-group row">
                       <label
                         className="col-sm-3 col-form-label"
-                        htmlFor="lastname"
+                        htmlFor="lastName"
                       >
                         Lastname
                         <span className="text-danger">*</span>
@@ -172,62 +215,32 @@ const AddStudents = () => {
                           type="text"
                           className="form-control"
                           placeholder="Lastname"
-                          id="lastname"
-                          name="lastname"
-                          {...register("lastname", {
+                          id="lastName"
+                          name="lastName"
+                          {...register("lastName", {
                             required: true,
                             minLength: 3,
                             maxLength: 20,
                           })}
                         />
-                        {errors.lastname &&
-                          errors.lastname.type === "required" && (
+                        {errors.lastName &&
+                          errors.lastName.type === "required" && (
                             <span className="text-danger">
                               Lastname is required
                             </span>
                           )}
-                        {errors.lastname &&
-                          errors.lastname.type === "minLength" && (
+                        {errors.lastName &&
+                          errors.lastName.type === "minLength" && (
                             <span className="text-danger">
                               Lastname should be at least 3 characters
                             </span>
                           )}
-                        {errors.lastname &&
-                          errors.lastname.type === "maxLength" && (
+                        {errors.lastName &&
+                          errors.lastName.type === "maxLength" && (
                             <span className="text-danger">
                               Lastname should not exceed 20 characters
                             </span>
                           )}
-                      </div>
-                    </div>
-                    <div className="form-group row">
-                      <label
-                        className="col-sm-3 col-form-label"
-                        htmlFor="email"
-                      >
-                        Email
-                        <span className="text-danger">*</span>
-                      </label>
-                      <div className="col-sm-9">
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="Email"
-                          id="email"
-                          name="email"
-                          {...register("email", {
-                            required: true,
-                            pattern: /^\S+@\S+$/i,
-                          })}
-                        />
-                        {errors.email && errors.email.type === "required" && (
-                          <span className="text-danger">Email is required</span>
-                        )}
-                        {errors.email && errors.email.type === "pattern" && (
-                          <span className="text-danger">
-                            Invalid email format
-                          </span>
-                        )}
                       </div>
                     </div>
                     <div className="form-group row">
@@ -246,12 +259,42 @@ const AddStudents = () => {
                           {...register("gender", { required: true })}
                         >
                           <option value="">Please select Gender</option>
-                          <option value="male">Male</option>
-                          <option value="female">Female</option>
+                          <option value="MALE">Male</option>
+                          <option value="FEMALE">Female</option>
                         </select>
                         {errors.gender && (
                           <span className="text-danger">
-                            Please select a country
+                            Please select a Gender
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label htmlFor="age" className="col-sm-3 col-form-label">
+                        Age
+                      </label>
+                      <div className="col-sm-9">
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Age"
+                          id="age"
+                          name="age"
+                          {...register("age", {
+                            required: "Age is required",
+                            min: {
+                              value: 0,
+                              message: "You must be at least 2 years old",
+                            },
+                            max: {
+                              value: 120,
+                              message: "You cannot be older than 120 years",
+                            },
+                          })}
+                        />
+                        {errors.age && (
+                          <span className="text-danger">
+                            {errors.age.message}
                           </span>
                         )}
                       </div>
@@ -283,34 +326,99 @@ const AddStudents = () => {
                           )}
                       </div>
                     </div>
+
                     <div className="form-group row">
                       <label
                         className="col-sm-3 col-form-label"
-                        htmlFor="phone"
+                        htmlFor="gradeId"
                       >
-                        Phone Number
+                        Grade
                         <span className="text-danger">*</span>
                       </label>
                       <div className="col-sm-9">
-                        <input
-                          type="number"
+                        <select
                           className="form-control"
-                          placeholder="Phone Number"
-                          id="phone"
-                          name="phone"
-                          {...register("phone", {
-                            required: true,
-                            pattern: /^[0-9]{10}$/,
-                          })}
-                        />
-                        {errors.phone && errors.phone.type === "required" && (
+                          id="gradeId"
+                          name="gradeId"
+                          {...register("gradeId", { required: true })}
+                        >
+                          <option value="">Please select Grade</option>
+                          {grade.map((grade) => (
+                            <option value={grade.gradeId} key={grade.gradeId}>
+                              {grade.grade}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.gradeId && (
                           <span className="text-danger">
-                            Phone number is required
+                            Please select a grade
                           </span>
                         )}
-                        {errors.phone && errors.phone.type === "pattern" && (
+                      </div>
+                    </div>
+
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="classId"
+                      >
+                        Class
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <select
+                          className="form-control"
+                          id="class"
+                          name="classId"
+                          {...register("classId", { required: true })}
+                        >
+                          <option value="">Please select Class</option>
+                          {classes.map((classes) => (
+                            <option
+                              value={classes.classId}
+                              key={classes.className}
+                            >
+                              {classes.className}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.classId && (
                           <span className="text-danger">
-                            Invalid phone number format
+                            Please select a class
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="teacherId"
+                      >
+                        Class Teacher
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <select
+                          className="form-control"
+                          id="teacherId"
+                          name="teacherId"
+                          {...register("teacherId", { required: true })}
+                        >
+                          <option value="">Please select Class Teacher</option>
+
+                          {teacher.map((teacher) => (
+                            <option
+                              value={teacher.teacherId}
+                              key={teacher.teacherId}
+                            >
+                              {teacher.firstName + " " + teacher.lastName}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.teacherId && (
+                          <span className="text-danger">
+                            Please select a class teacher
                           </span>
                         )}
                       </div>
@@ -319,7 +427,7 @@ const AddStudents = () => {
                     <div className="form-group row">
                       <div className="col-sm-10">
                         <button type="submit" className="btn btn-primary">
-                          Add Teacher
+                          Add Student
                         </button>
                       </div>
                     </div>

@@ -2,7 +2,7 @@
 // // import { MdEdit } from "react-icons/md";
 import Topnavbar from "../../components/header/Topnavbar";
 import Siderbar from "../../components/header/siderbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // import { Table } from "@mui/material/Table";
 // import { TableContainer } from "@mui/material/TableContainer";
 // import { TableHead } from "@mui/material/TableHead";
@@ -11,7 +11,6 @@ import { useState } from "react";
 // import { TableBody } from "@mui/material/TableBody";
 // import { TablePagination } from "@mui/material/TablePagination";
 import {
-  Button,
   Checkbox,
   IconButton,
   Table,
@@ -25,8 +24,8 @@ import {
 import { MdDelete, MdEdit } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { FaEye } from "react-icons/fa";
-import CenterModal from "../../components/CenterModal";
-import { setStudentDetails, studentState } from "../../store/store";
+import { getStudents } from "../../store/store";
+// import CenterModal from "../../components/CenterModal";
 
 const ViewStudents = () => {
   const [students, setStudents] = useState([
@@ -96,6 +95,10 @@ const ViewStudents = () => {
   const handleDelete = (student) => {
     setStudent(student);
   };
+
+  useEffect(() => {
+    getStudents().then((res) => console.log(res));
+  }, []);
 
   return (
     <div>
@@ -192,7 +195,7 @@ const ViewStudents = () => {
         <Topnavbar />
 
         <div className="content-body px-2 my-4">
-          <CenterModal student={student} />
+          {/* <CenterModal student={student} /> */}
           <div className="col-12">
             <div className="card">
               <div className="card-header">

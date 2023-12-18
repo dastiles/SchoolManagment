@@ -10,6 +10,7 @@ export const authState = proxy({
   accessToken: localStorage.getItem("accessToken") || null,
   refreshToken: localStorage.getItem("refreshToken") || null,
   schoolId: localStorage.getItem("schoolId") || null,
+  userId: localStorage.getItem("userId") || null,
 });
 
 export const setTokens = (accessToken, refreshToken) => {
@@ -19,9 +20,11 @@ export const setTokens = (accessToken, refreshToken) => {
   localStorage.setItem("refreshToken", refreshToken);
 };
 
-export const setSchoolId = (id) => {
+export const setSchoolId = (id, userId) => {
   authState.schoolId = id;
+  authState.userId = userId;
   localStorage.setItem("schoolId", id);
+  localStorage.setItem("userId", userId);
 };
 
 export const clearTokens = () => {

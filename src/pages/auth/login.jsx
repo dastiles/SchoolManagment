@@ -24,7 +24,9 @@ function Login() {
         .then((response) => {
           setTokens(response.data.access_token, response.data.refresh_token);
           let id = decodeTokens().accessTokenData.schoolId;
-          setSchoolId(id);
+          let userId = decodeTokens().accessTokenData.userId;
+          console.log(decodeTokens().accessTokenData);
+          setSchoolId(id, userId);
           console.log(response.data);
           toast.success("Succesfully Logged in");
           navigate("/");
