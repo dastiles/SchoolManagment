@@ -60,17 +60,17 @@ const Siderbar = () => {
           <li>
             <a className="has-arrow ai-icon" aria-expanded="false">
               <GiAstronautHelmet size={30} className="me-3" />
-              <span className="nav-text">Stuff</span>
+              <span className="nav-text">Staff</span>
             </a>
             <ul aria-expanded="false">
               <li>
                 <Link to={"/stuff"} reloadDocument>
-                  View Stuff
+                  View Staff
                 </Link>
               </li>
               <li>
                 <Link to={"/addstuff"} reloadDocument>
-                  Add Stuff
+                  Add Staff
                 </Link>
               </li>
             </ul>

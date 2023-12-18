@@ -1,7 +1,55 @@
+import { useForm } from "react-hook-form";
+import api, {
+  authState,
+  decodeTokens,
+  setSchoolId,
+  setTokens,
+} from "../../auth/auth";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
+
 function Login() {
+  const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = async (data) => {
+    try {
+      await api
+        .post("/api/v1/auth/login", data)
+        .then((response) => {
+          setTokens(response.data.access_token, response.data.refresh_token);
+          let id = decodeTokens().accessTokenData.schoolId;
+          setSchoolId(id);
+          console.log(response.data);
+          toast.success("Succesfully Logged in");
+          navigate("/");
+          navigate(0);
+        })
+        .catch((err) => {
+          toast.error(err.response.data.message);
+          console.log(err.response.data.message, "the error");
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (authState.accessToken) {
+      navigate("/");
+      navigate(0);
+    }
+
+    console.log(authState.accessToken);
+  }, [navigate]);
   return (
     <>
-      <body className="loginBackground">
+      <div className="loginBackground">
         <div className="container h-100">
           <div className="row h-100 align-items-center justify-contain-center">
             <div className="col-xl-12">
@@ -29,7 +77,10 @@ function Login() {
                           <br /> during registration
                         </span>
 
-                        <form action="index.html" className="mt-3">
+                        <form
+                          className="mt-3"
+                          onSubmit={handleSubmit(onSubmit)}
+                        >
                           <div className="mb-3">
                             <label className="mb-1">
                               <strong>Email</strong>
@@ -37,8 +88,24 @@ function Login() {
                             <input
                               type="email"
                               className="form-control"
-                              value="hello@example.com"
+                              placeholder="hello@example.com"
+                              {...register("emailAddress", {
+                                required: true,
+                                pattern: /^\S+@\S+$/i,
+                              })}
                             />
+                            {errors.emailAddress &&
+                              errors.emailAddress.type === "required" && (
+                                <span className="text-danger">
+                                  Email is required
+                                </span>
+                              )}
+                            {errors.emailAddress &&
+                              errors.emailAddress.type === "pattern" && (
+                                <span className="text-danger">
+                                  Invalid email format
+                                </span>
+                              )}
                           </div>
                           <div className="mb-3">
                             <label className="mb-1">
@@ -47,25 +114,18 @@ function Login() {
                             <input
                               type="password"
                               className="form-control"
-                              value="Password"
+                              placeholder="password"
+                              {...register("password", {
+                                required: true,
+                              })}
                             />
+                            {errors.password && (
+                              <span className="text-danger">
+                                Please select a country
+                              </span>
+                            )}
                           </div>
                           <div className="row d-flex justify-content-between mt-4 mb-2">
-                            <div className="mb-3">
-                              <div className="form-check custom-checkbox ms-1">
-                                <input
-                                  type="checkbox"
-                                  className="form-check-input"
-                                  id="basic_checkbox_1"
-                                />
-                                <label
-                                  className="form-check-label"
-                                  htmlFor="basic_checkbox_1"
-                                >
-                                  Remember my preference
-                                </label>
-                              </div>
-                            </div>
                             <div className="mb-3">
                               <a href="page-forgot-password.html">
                                 Forgot Password?
@@ -89,7 +149,7 @@ function Login() {
             </div>
           </div>
         </div>
-      </body>
+      </div>
     </>
   );
 }

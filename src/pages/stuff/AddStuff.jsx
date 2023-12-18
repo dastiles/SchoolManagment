@@ -1,7 +1,17 @@
+import { useForm } from "react-hook-form";
 import Topnavbar from "../../components/header/Topnavbar";
 import Siderbar from "../../components/header/siderbar";
 
 const AddStuff = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
   return (
     <div>
       <div id="preloader">
@@ -96,7 +106,229 @@ const AddStuff = () => {
 
         <Topnavbar />
 
-        <div className="content-body"></div>
+        <div className="content-body">
+          <div className="col-xl-12 col-lg-12">
+            <div className="card">
+              <div className="card-header">
+                <h4 className="card-title">Add Teacher</h4>
+              </div>
+              <div className="card-body">
+                <div className="basic-form">
+                  <form
+                    className="teacher-form"
+                    onSubmit={handleSubmit(onSubmit)}
+                  >
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="firstname"
+                      >
+                        Firstname
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Firstname"
+                          id="firstname"
+                          name="firstname"
+                          {...register("firstname", {
+                            required: true,
+                            minLength: 3,
+                            maxLength: 20,
+                          })}
+                        />
+                        {errors.firstname &&
+                          errors.firstname.type === "required" && (
+                            <span className="text-danger">
+                              Firstname is required
+                            </span>
+                          )}
+                        {errors.firstname &&
+                          errors.firstname.type === "minLength" && (
+                            <span className="text-danger">
+                              Firstname should be at least 2 characters
+                            </span>
+                          )}
+                        {errors.firstname &&
+                          errors.firstname.type === "maxLength" && (
+                            <span className="text-danger">
+                              Firstname should not exceed 20 characters
+                            </span>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="lastname"
+                      >
+                        Lastname
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Lastname"
+                          id="lastname"
+                          name="lastname"
+                          {...register("lastname", {
+                            required: true,
+                            minLength: 3,
+                            maxLength: 20,
+                          })}
+                        />
+                        {errors.lastname &&
+                          errors.lastname.type === "required" && (
+                            <span className="text-danger">
+                              Lastname is required
+                            </span>
+                          )}
+                        {errors.lastname &&
+                          errors.lastname.type === "minLength" && (
+                            <span className="text-danger">
+                              Lastname should be at least 3 characters
+                            </span>
+                          )}
+                        {errors.lastname &&
+                          errors.lastname.type === "maxLength" && (
+                            <span className="text-danger">
+                              Lastname should not exceed 20 characters
+                            </span>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="email"
+                      >
+                        Email
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Email"
+                          id="email"
+                          name="email"
+                          {...register("email", {
+                            required: true,
+                            pattern: /^\S+@\S+$/i,
+                          })}
+                        />
+                        {errors.email && errors.email.type === "required" && (
+                          <span className="text-danger">Email is required</span>
+                        )}
+                        {errors.email && errors.email.type === "pattern" && (
+                          <span className="text-danger">
+                            Invalid email format
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="gender"
+                      >
+                        Gender
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <select
+                          className="form-control"
+                          id="gender"
+                          name="gender"
+                          {...register("gender", { required: true })}
+                        >
+                          <option value="">Please select Gender</option>
+                          <option value="male">Male</option>
+                          <option value="female">Female</option>
+                        </select>
+                        {errors.gender && (
+                          <span className="text-danger">
+                            Please select a country
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="address"
+                      >
+                        Address
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="Address"
+                          id="address"
+                          name="address"
+                          {...register("address", {
+                            required: true,
+                          })}
+                        />
+                        {errors.address &&
+                          errors.address.type === "required" && (
+                            <span className="text-danger">
+                              Address is required
+                            </span>
+                          )}
+                      </div>
+                    </div>
+                    <div className="form-group row">
+                      <label
+                        className="col-sm-3 col-form-label"
+                        htmlFor="phone"
+                      >
+                        Phone Number
+                        <span className="text-danger">*</span>
+                      </label>
+                      <div className="col-sm-9">
+                        <input
+                          type="number"
+                          className="form-control"
+                          placeholder="Phone Number"
+                          id="phone"
+                          name="phone"
+                          {...register("phone", {
+                            required: true,
+                            pattern: /^[0-9]{10}$/,
+                          })}
+                        />
+                        {errors.phone && errors.phone.type === "required" && (
+                          <span className="text-danger">
+                            Phone number is required
+                          </span>
+                        )}
+                        {errors.phone && errors.phone.type === "pattern" && (
+                          <span className="text-danger">
+                            Invalid phone number format
+                          </span>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="form-group row">
+                      <div className="col-sm-10">
+                        <button type="submit" className="btn btn-primary">
+                          Add Teacher
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

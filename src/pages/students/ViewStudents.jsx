@@ -1,7 +1,102 @@
+// import DataTable from "react-data-table-component";
+// // import { MdEdit } from "react-icons/md";
 import Topnavbar from "../../components/header/Topnavbar";
 import Siderbar from "../../components/header/siderbar";
+import { useState } from "react";
+// import { Table } from "@mui/material/Table";
+// import { TableContainer } from "@mui/material/TableContainer";
+// import { TableHead } from "@mui/material/TableHead";
+// import { TableRow } from "@mui/material/TableRow";
+// import { TableCell } from "@mui/material/TableCell";
+// import { TableBody } from "@mui/material/TableBody";
+// import { TablePagination } from "@mui/material/TablePagination";
+import {
+  Button,
+  Checkbox,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+} from "@mui/material";
+import { MdDelete, MdEdit } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { FaEye } from "react-icons/fa";
+import CenterModal from "../../components/CenterModal";
+import { setStudentDetails, studentState } from "../../store/store";
 
 const ViewStudents = () => {
+  const [students, setStudents] = useState([
+    {
+      id: 1,
+      firstNamename: "John",
+      lastName: "Doe",
+      gender: "male",
+      grade: "4",
+      address: "20 street avenue",
+    },
+    {
+      id: 2,
+      firstNamename: "Jane",
+      lastName: "Doe",
+      gender: "female",
+      grade: "6",
+      address: "Mvuma street avenue",
+    },
+    {
+      id: 1,
+      firstNamename: "magire",
+      lastName: "united",
+      gender: "male",
+      grade: "3",
+      address: "20 street hare",
+    },
+  ]);
+
+  const [student, setStudent] = useState({});
+
+  // Selected students state
+  const [selectedStudents, setSelectedStudents] = useState([]);
+
+  // Pagination state
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  // Delete selected students
+  const handleDeleteSelectedStudents = () => {
+    const updatedStudents = students.filter(
+      (student) => !selectedStudents.includes(student.id)
+    );
+    setStudents(updatedStudents);
+    setSelectedStudents([]);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const handleSelectStudent = (studentId) => {
+    if (selectedStudents.includes(studentId)) {
+      setSelectedStudents(selectedStudents.filter((id) => id !== studentId));
+    } else {
+      setSelectedStudents([...selectedStudents, studentId]);
+    }
+  };
+
+  const isSelected = (studentId) => selectedStudents.includes(studentId);
+
+  const handleDelete = (student) => {
+    setStudent(student);
+  };
+
   return (
     <div>
       <div id="preloader">
@@ -96,7 +191,109 @@ const ViewStudents = () => {
 
         <Topnavbar />
 
-        <div className="content-body"></div>
+        <div className="content-body px-2 my-4">
+          <CenterModal student={student} />
+          <div className="col-12">
+            <div className="card">
+              <div className="card-header">
+                <h4 className="card-title">View Students</h4>
+              </div>
+              <div className="card-body">
+                <TableContainer className="w-100">
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell>
+                          <Checkbox
+                            checked={
+                              selectedStudents.length === students.length
+                            }
+                            onChange={() => {
+                              if (selectedStudents.length === students.length) {
+                                setSelectedStudents([]);
+                              } else {
+                                setSelectedStudents(
+                                  students.map((student) => student.id)
+                                );
+                              }
+                            }}
+                          />
+                        </TableCell>
+                        <TableCell>Firstname</TableCell>
+                        <TableCell>Lastame</TableCell>
+                        <TableCell>Gender</TableCell>
+                        <TableCell>Address</TableCell>
+                        <TableCell>Grade</TableCell>
+                        <TableCell>Action</TableCell>
+                      </TableRow>
+                    </TableHead>
+                    <TableBody>
+                      {students
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .map((student) => (
+                          <TableRow key={student.id}>
+                            <TableCell>
+                              <Checkbox
+                                checked={isSelected(student.id)}
+                                onChange={() => handleSelectStudent(student.id)}
+                              />
+                            </TableCell>
+                            <TableCell>{student.firstName}</TableCell>
+                            <TableCell>{student.lastName}</TableCell>
+                            <TableCell>{student.gender}</TableCell>
+                            <TableCell>{student.address}</TableCell>
+                            <TableCell>{student.grade}</TableCell>
+
+                            <TableCell>
+                              <Link
+                                reloadDocument
+                                to={`/profile/${student.studentId}`}
+                              >
+                                <IconButton aria-label="delete">
+                                  <FaEye />
+                                </IconButton>
+                              </Link>
+
+                              <Link
+                                reloadDocument
+                                to={`/editstudent/${student.studentId}`}
+                              >
+                                <IconButton aria-label="delete">
+                                  <MdEdit />
+                                </IconButton>
+                              </Link>
+
+                              <IconButton
+                                aria-label="delete"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModalCenter"
+                                onClick={() => handleDelete(student)}
+                              >
+                                <MdDelete />
+                              </IconButton>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25]} // Customize the number of rows per page options
+                  component="div"
+                  count={1}
+                  rowsPerPage={1}
+                  page={1}
+                  onPageChange={() => {}}
+                  onRowsPerPageChange={() => {}}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
